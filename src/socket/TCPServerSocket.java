@@ -65,9 +65,4 @@ public class TCPServerSocket {
         serverSocket.close();
 
     }
-
-    public static void main(String[] args)  {
-
-    }
-
 }
