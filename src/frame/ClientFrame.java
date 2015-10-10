@@ -270,7 +270,7 @@ public class ClientFrame extends javax.swing.JFrame {
 
     private void servBtnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_servBtnStartActionPerformed
 
-        int porta = Integer.parseInt(servEdtPorta.getText());
+        final int porta = Integer.parseInt(servEdtPorta.getText());
         Runnable run = new Runnable() {
 
             @Override
@@ -299,8 +299,8 @@ public class ClientFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_servBtnStartActionPerformed
 
     private void cliBtnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cliBtnStartActionPerformed
-        String host = cliEdtHost.getText();
-        int porta = Integer.parseInt(cliEdtPorta.getText());
+        final String host = cliEdtHost.getText();
+        final int porta = Integer.parseInt(cliEdtPorta.getText());
 
         Runnable run = new Runnable() {
 
