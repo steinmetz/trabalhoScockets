@@ -7,7 +7,12 @@ package frame;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +30,24 @@ public class ClientFrame extends javax.swing.JFrame {
     private String mensagem  = "";
     public ClientFrame() {
         initComponents();
-        mensagem = generateString(Integer.parseInt(cliEdtTamanho.getText()));
+        try {
+            String ip = "";
+            Enumeration e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements())
+            {
+                NetworkInterface n = (NetworkInterface) e.nextElement();
+                Enumeration ee = n.getInetAddresses();
+                while (ee.hasMoreElements())
+                {
+                    InetAddress i = (InetAddress) ee.nextElement();
+                    ip +=i.getHostAddress()+"\n";
+                }
+            }
+            txtIP.setText(ip);
+        } catch (Exception ex) {
+            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     /**
@@ -62,6 +84,8 @@ public class ClientFrame extends javax.swing.JFrame {
         servRadTCP = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtRelatorio = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        txtIP = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,7 +94,7 @@ public class ClientFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Host");
 
-        cliEdtHost.setText("localhost");
+        cliEdtHost.setText("143.54.10.137");
 
         jLabel2.setText("Porta");
 
@@ -160,7 +184,7 @@ public class ClientFrame extends javax.swing.JFrame {
                         .addComponent(cliEdtTamanho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(29, 29, 29)
                 .addComponent(cliBtnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         jInternalFrame2.setTitle("Servidor");
@@ -241,28 +265,43 @@ public class ClientFrame extends javax.swing.JFrame {
         txtRelatorio.setRows(5);
         jScrollPane1.setViewportView(txtRelatorio);
 
+        jLabel3.setText("Meu IP é:");
+
+        txtIP.setText("IP");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(182, 182, 182)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIP)))
                 .addContainerGap(69, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtIP))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jInternalFrame2)
                     .addComponent(jInternalFrame1)
                     .addComponent(jScrollPane1))
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         pack();
@@ -275,6 +314,9 @@ public class ClientFrame extends javax.swing.JFrame {
 
             @Override
             public void run() {
+                
+                        servBtnStart.setEnabled(false);
+                servBtnStart.setText("Aguarde...");
                 if (servRadTCP.isSelected()) {
 
                     TCPServerSocket serverTCP = new TCPServerSocket(porta);
@@ -291,6 +333,8 @@ public class ClientFrame extends javax.swing.JFrame {
                     } catch (Exception e) {
                     }
                 }
+                servBtnStart.setEnabled(true);
+                servBtnStart.setText("Start");
             }
         };
         Thread thread = new Thread(run);
@@ -301,11 +345,14 @@ public class ClientFrame extends javax.swing.JFrame {
     private void cliBtnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cliBtnStartActionPerformed
         final String host = cliEdtHost.getText();
         final int porta = Integer.parseInt(cliEdtPorta.getText());
-
+        mensagem = generateString(Integer.parseInt(cliEdtTamanho.getText()));
+        
         Runnable run = new Runnable() {
 
             @Override
             public void run() {
+                cliBtnStart.setEnabled(false);
+                cliBtnStart.setText("Aguarde...");
                 if (cliRadTCP.isSelected()) {
 
                     TCPClientSocket clientTCP;
@@ -326,7 +373,10 @@ public class ClientFrame extends javax.swing.JFrame {
                     }
                     System.out.println("");
                 }
+                cliBtnStart.setEnabled(true);
+                cliBtnStart.setText("Start");
             }
+            
         };
         Thread thread = new Thread(run);
         thread.start();
@@ -392,6 +442,7 @@ public class ClientFrame extends javax.swing.JFrame {
     private javax.swing.JInternalFrame jInternalFrame2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
@@ -403,6 +454,7 @@ public class ClientFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton servRadTCP;
     private javax.swing.JRadioButton servRadUDP;
     private javax.swing.JLabel servTxtStatus;
+    private javax.swing.JLabel txtIP;
     private javax.swing.JTextArea txtRelatorio;
     // End of variables declaration//GEN-END:variables
 }

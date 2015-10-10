@@ -69,12 +69,15 @@ public class UDPClientSocket {
                             = new String(receivePacket.getData()).trim();                    
                     
                 } catch (SocketTimeoutException ste) {
-                    //System.out.println("Timeout Occurred: Packet assumed lost");
+                    System.out.println("Timeout Occurred: Packet assumed lost");
                     error = true;
                 }
                 end = System.nanoTime();
                 if (!message.equals(receiveMessage)) {
                     error = true; 
+                    System.out.println("E:"+message);
+                    System.out.println("R:"+receiveMessage);
+                    System.out.println("\n\n");
                 }
                 if(error){
                     relatorio.erros++;

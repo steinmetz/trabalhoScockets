@@ -27,12 +27,12 @@ public class UDPServerSocket {
         try {
             DatagramSocket serverSocket = new DatagramSocket(port);
 
-            byte[] receiveData = new byte[1024];
-            byte[] sendData = new byte[1024];
+            byte[] receiveData = new byte[2048];
+            byte[] sendData = new byte[2048];
 
             while (true) {
 
-                receiveData = new byte[1024];
+                receiveData = new byte[2048];
 
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData, receiveData.length);
