@@ -9,20 +9,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import javax.swing.JLabel;
 
 /**
  *
  * @author charles
  */
-public class UTPServerSocket {
+public class UDPServerSocket {
 
     private int port = 9000;
 
-    public UTPServerSocket(int port) {
+    public UDPServerSocket(int port) {
         this.port = port;
     }
     
-    public void start() throws Exception {
+    public void start(JLabel status) throws Exception {
         try {
             DatagramSocket serverSocket = new DatagramSocket(port);
 
@@ -36,7 +37,7 @@ public class UTPServerSocket {
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData, receiveData.length);
 
-                System.out.println("Waiting for datagram packet");
+                status.setText("Waiting for datagram packet");
 
                 serverSocket.receive(receivePacket);
 
@@ -44,14 +45,9 @@ public class UTPServerSocket {
 
                 InetAddress IPAddress = receivePacket.getAddress();
 
-                int port = receivePacket.getPort();
-
-                System.out.println("From: " + IPAddress + ":" + port);
-                System.out.println("Message: " + sentence);
-
-                String capitalizedSentence = sentence.toUpperCase();
-
-                sendData = capitalizedSentence.getBytes();
+                int port = receivePacket.getPort(); 
+ 
+                sendData = sentence.getBytes();
 
                 DatagramPacket sendPacket
                         = new DatagramPacket(sendData, sendData.length, IPAddress,
@@ -62,7 +58,7 @@ public class UTPServerSocket {
             }
 
         } catch (SocketException ex) {
-            System.out.println("UDP Port "+port+" is occupied.");
+            status.setText("UDP Port "+port+" is occupied.");
             System.exit(1);
         }
 

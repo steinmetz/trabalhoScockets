@@ -5,12 +5,15 @@
  */
 package socket;
 
+import frame.Relatorio;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,6 +25,7 @@ public class TCPClientSocket {
     private int serverPort;
     private String message;
     private boolean sending = false;
+    Socket echoSocket = null;
 
     public TCPClientSocket(String serverHostname, int serverPort, String message) {
         this.serverHostname = serverHostname;
@@ -29,12 +33,15 @@ public class TCPClientSocket {
         this.message = message;
     }
 
-    public void start(String[] args) throws IOException {
+    public Relatorio start(int repeticoes) throws IOException {
         sending = true;
-        Socket echoSocket = null;
+        
         PrintWriter out = null;
         BufferedReader in = null;
-
+        Relatorio relatorio = new Relatorio();
+        relatorio.bytes = message.getBytes().length;
+        relatorio.repeticoes = repeticoes;
+        
         try { 
             echoSocket = new Socket(serverHostname,serverPort );
             out = new PrintWriter(echoSocket.getOutputStream(), true);
@@ -52,7 +59,7 @@ public class TCPClientSocket {
         long start, end;
         String receiveMessage;
         boolean error;
-        while (sending) {
+        for (int i  = 0; i < repeticoes; i++) {
             error = false;
             start = System.nanoTime();
             out.println(message);
@@ -60,17 +67,26 @@ public class TCPClientSocket {
             end = System.nanoTime();
             if(!message.equals(receiveMessage)){
                 error = true;
+                System.out.println("error cliente");
+            } 
+            if(error){
+                relatorio.erros++;
             }
-            System.out.println("echo: " + in.readLine());
-            System.out.print("input: ");
+            relatorio.tempos.add(end-start);            
         }
 
         out.close();
         in.close();
         echoSocket.close();
+        return relatorio;
     }
     public void stop(){
         sending = false;
+        try {
+            echoSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(TCPClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

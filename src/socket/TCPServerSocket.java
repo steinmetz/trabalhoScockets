@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.swing.JLabel;
 
 /**
  *
@@ -19,50 +20,57 @@ import java.net.Socket;
 public class TCPServerSocket {
 
     private int port = 9000;
+    private boolean listening = false;
 
     public TCPServerSocket(int port) {
         this.port = port;
-    }    
-    
-    public void start()throws IOException {
-        ServerSocket serverSocket = null;
+    }
 
-        try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            System.err.println("Could not listen on port:"+port);
-            System.exit(1);
-        }
+    public void start(JLabel status) throws IOException {
+        listening = true;
+        do {
+            ServerSocket serverSocket = null;
 
-        Socket clientSocket = null;
-        System.out.println("Waiting for connection.....");
+            try {
+                serverSocket = new ServerSocket(port);
+            } catch (IOException e) {
+                status.setText("Could not listen on port:" + port);
+                System.err.println("Could not listen on port:" + port);
+                System.exit(1);
+            }
 
-        try {
-            clientSocket = serverSocket.accept();
-        } catch (IOException e) {
-            System.err.println("Accept failed.");
-            System.exit(1);
-        }
+            Socket clientSocket = null;
 
-        System.out.println("Connection successful");
-        System.out.println("Waiting for input.....");
+            status.setText("Waiting for connection.....");
 
-        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
-                true);
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
+            try {
+                clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                status.setText("Accept failed.");
+                System.exit(1);
+            }
 
-        String inputLine;
+            status.setText("Connection successful\n" + "Waiting for input.....");
 
-        while ((inputLine = in.readLine()) != null) {
-            System.out.println("Server: " + inputLine);
-            out.println(inputLine);
-        }
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
+                    true);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()));
 
-        out.close();
-        in.close();
-        clientSocket.close();
-        serverSocket.close();
+            String inputLine;
 
+            while ((inputLine = in.readLine()) != null) { 
+                out.println(inputLine); 
+            }
+            out.close();
+            in.close();
+            clientSocket.close();
+            serverSocket.close();
+        } while (listening);
+
+    }
+
+    public void stop() {
+        listening = false;
     }
 }
