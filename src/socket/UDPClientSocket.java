@@ -62,7 +62,7 @@ public class UDPClientSocket {
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData, receiveData.length);
                 //System.out.println("Waiting for return packet");
-                clientSocket.setSoTimeout(10000);
+                clientSocket.setSoTimeout(1000);
                 try {
                     clientSocket.receive(receivePacket);
                     receiveMessage
