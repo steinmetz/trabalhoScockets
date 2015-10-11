@@ -44,8 +44,8 @@ public class UDPClientSocket {
             System.out.println("Attemping to connect to " + IPAddress
                     + ") via UDP port 9876");
 
-            byte[] sendData = new byte[1024];
-            byte[] receiveData = new byte[1024];
+            byte[] sendData;
+            byte[] receiveData = new byte[30000];
 
             sendData = message.getBytes();
 

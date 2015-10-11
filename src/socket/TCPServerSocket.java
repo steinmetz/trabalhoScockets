@@ -61,6 +61,7 @@ public class TCPServerSocket {
 
             while ((inputLine = in.readLine()) != null) { 
                 out.println(inputLine); 
+                System.out.println("Charles");
             }
             out.close();
             in.close();
