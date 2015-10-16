@@ -43,8 +43,8 @@ public class UDPClientSocket {
             InetAddress IPAddress = InetAddress.getByName(serverHostname);
             System.out.println("Attemping to connect to " + IPAddress
                     + ") via UDP port 9876");
-
-            byte[] sendData = new byte[30000];
+ 
+            byte[] sendData; 
             byte[] receiveData = new byte[30000];
 
             sendData = message.getBytes();
@@ -61,8 +61,8 @@ public class UDPClientSocket {
                 clientSocket.send(sendPacket);
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData, receiveData.length);
-                //System.out.println("Waiting for return packet");
-                clientSocket.setSoTimeout(30000);
+                //System.out.println("Waiting for return packet"); 
+                clientSocket.setSoTimeout(1000); 
                 try {
                     clientSocket.receive(receivePacket);
                     receiveMessage
