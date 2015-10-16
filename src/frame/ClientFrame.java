@@ -6,6 +6,7 @@
 package frame;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -94,7 +95,7 @@ public class ClientFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Host");
 
-        cliEdtHost.setText("143.54.10.137");
+        cliEdtHost.setText("143.54.131.6");
 
         jLabel2.setText("Porta");
 
@@ -341,7 +342,17 @@ public class ClientFrame extends javax.swing.JFrame {
         thread.start();
 
     }//GEN-LAST:event_servBtnStartActionPerformed
+ public void save(Relatorio r){
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter("/home/charles/Dropbox/UDP/b"+r.bytes+"r"+r.repeticoes+".txt", "UTF-8");
+            writer.println(r.toString()); 
+            writer.close();
+        } catch (Exception ex) {
+            Logger.getLogger(TCPClientSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+    }
     private void cliBtnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cliBtnStartActionPerformed
         final String host = cliEdtHost.getText();
         final int porta = Integer.parseInt(cliEdtPorta.getText());
@@ -360,6 +371,7 @@ public class ClientFrame extends javax.swing.JFrame {
                     try {
                         Relatorio relatorio = clientTCP.start(Integer.parseInt(cliEdtRepeticoes.getText()));
                         txtRelatorio.setText(relatorio.toString());
+                        save(relatorio);
                     } catch (IOException ex) {
                         Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -369,6 +381,7 @@ public class ClientFrame extends javax.swing.JFrame {
                     try {
                         Relatorio relatorio = clientUDP.start(Integer.parseInt(cliEdtRepeticoes.getText()));
                         txtRelatorio.setText(relatorio.toString());
+                        save(relatorio);
                     } catch (Exception e) {
                     }
                     System.out.println("");

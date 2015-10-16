@@ -27,12 +27,12 @@ public class UDPServerSocket {
         try {
             DatagramSocket serverSocket = new DatagramSocket(port);
 
-            byte[] receiveData = new byte[2048];
-            byte[] sendData = new byte[2048];
+            byte[] receiveData;
+            byte[] sendData;
 
             while (true) {
 
-                receiveData = new byte[2048];
+                receiveData = new byte[30000];
 
                 DatagramPacket receivePacket
                         = new DatagramPacket(receiveData, receiveData.length);
@@ -40,14 +40,20 @@ public class UDPServerSocket {
                 status.setText("Waiting for datagram packet");
 
                 serverSocket.receive(receivePacket);
+                
+                
 
                 String sentence = new String(receivePacket.getData());
 
+                
+                
                 InetAddress IPAddress = receivePacket.getAddress();
 
                 int port = receivePacket.getPort(); 
  
                 sendData = sentence.getBytes();
+                
+                System.out.println(""+sendData.length);
 
                 DatagramPacket sendPacket
                         = new DatagramPacket(sendData, sendData.length, IPAddress,

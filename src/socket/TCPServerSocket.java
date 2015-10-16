@@ -41,16 +41,16 @@ public class TCPServerSocket {
 
             Socket clientSocket = null;
 
-            status.setText("Waiting for connection.....");
+            //status.setText("Waiting for connection.....");
 
             try {
                 clientSocket = serverSocket.accept();
             } catch (IOException e) {
-                status.setText("Accept failed.");
+              //  status.setText("Accept failed.");
                 System.exit(1);
             }
 
-            status.setText("Connection successful\n" + "Waiting for input.....");
+            //status.setText("Connection successful\n" + "Waiting for input.....");
 
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
                     true);
@@ -61,6 +61,7 @@ public class TCPServerSocket {
 
             while ((inputLine = in.readLine()) != null) { 
                 out.println(inputLine); 
+                 System.out.println("charles");
             }
             out.close();
             in.close();

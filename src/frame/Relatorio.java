@@ -17,7 +17,7 @@ public class Relatorio {
     public String toString() {
         String tempo = "";
         for(long i : tempos){
-           tempo += i+"\n";
+           tempo += i+"\r\n";
         }
         return "Relatorio\n\n"+
                "bytes=" + bytes + "\n"+ 
